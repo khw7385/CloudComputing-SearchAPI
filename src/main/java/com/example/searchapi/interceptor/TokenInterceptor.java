@@ -1,10 +1,8 @@
 package com.example.searchapi.interceptor;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClient;
@@ -18,17 +16,11 @@ public class TokenInterceptor implements HandlerInterceptor {
     private static final String AUTHORIZATION = "Authorization";
     private static final String NOT_TOKEN_RESPONSE = "{ \"error\": \"토큰을 찾을 수 없습니다.\"}";
 
-
-    private final ObjectMapper objectMapper;
-
-    @Value("${auth.server-url}")
     private final String AuthServerURL;
-
-    @Value("${auth.api-url}")
     private final String AuthApiURL;
 
     //유저 정보를 담을 record 생성
-    public record UserDetail(String id) {};
+    public record UserDetail(String id) {}
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {

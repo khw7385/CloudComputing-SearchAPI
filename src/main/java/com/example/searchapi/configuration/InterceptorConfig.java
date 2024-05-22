@@ -12,8 +12,6 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @RequiredArgsConstructor
 public class InterceptorConfig implements WebMvcConfigurer {
 
-    private final ObjectMapper objectMapper;
-
     @Value("${auth.server-url}")
     private String AuthServerURL;
 
@@ -22,7 +20,7 @@ public class InterceptorConfig implements WebMvcConfigurer {
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(new TokenInterceptor(objectMapper, AuthServerURL, AuthApiURL))
+        registry.addInterceptor(new TokenInterceptor(AuthServerURL, AuthApiURL))
                 .order(1)
                 .addPathPatterns("/api/search/**");
     }
