@@ -38,10 +38,11 @@ public class TokenInterceptor implements HandlerInterceptor {
         try {
             //Auth 서버로부터 유저 ID를 가져옴
             ResponseEntity<UserDetail> authResponse = RestClient.builder()
-                    .baseUrl(AuthServerURL + AuthApiURL)
+                    .baseUrl(AuthServerURL)
                     .defaultHeader(AUTHORIZATION, token)
                     .build()
                     .get()
+                    .uri(AuthApiURL)
                     .retrieve()
                     .toEntity(UserDetail.class);
 
