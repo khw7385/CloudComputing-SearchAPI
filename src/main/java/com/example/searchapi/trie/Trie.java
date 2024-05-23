@@ -1,6 +1,6 @@
 package com.example.searchapi.trie;
 
-import com.example.searchapi.exception.EnglishTagFoundException;
+import com.example.searchapi.exception.NotKoreanTagFoundException;
 
 import java.util.*;
 
@@ -102,8 +102,8 @@ public class Trie {
 
     public void insertAll(List<String> tagList){
         tagList.forEach(tag-> {
-            if (tag.matches(".*[a-zA-Z].*")){
-                throw new EnglishTagFoundException("태그 안에 영어가 존재합니다.");
+            if (!tag.matches("[가-힣ㄱ-ㅎ]+")){
+                throw new NotKoreanTagFoundException();
             }
         });
         tagList.forEach(this::insert);

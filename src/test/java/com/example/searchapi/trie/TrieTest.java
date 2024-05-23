@@ -1,13 +1,11 @@
 package com.example.searchapi.trie;
 
-import com.example.searchapi.exception.EnglishTagFoundException;
+import com.example.searchapi.exception.NotKoreanTagFoundException;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class TrieTest {
     @Test
@@ -44,12 +42,19 @@ public class TrieTest {
     }
 
     @Test
-    void throwEnglishTagFoundException(){
+    void notKoreanTagFoundException(){
         Trie trie = new Trie();
 
         Assertions.assertThatThrownBy(() -> {
             trie.insertAll(Arrays.asList("하늘", "sky", "한자"));
-        }).isInstanceOf(EnglishTagFoundException.class);
+        }).isInstanceOf(NotKoreanTagFoundException.class);
 
+        Assertions.assertThatThrownBy(() -> {
+            trie.insertAll(Arrays.asList("하늘", "787", "한자"));
+        }).isInstanceOf(NotKoreanTagFoundException.class);
+
+        Assertions.assertThatThrownBy(() -> {
+            trie.insertAll(Arrays.asList("하늘", "-@", "한자"));
+        }).isInstanceOf(NotKoreanTagFoundException.class);
     }
 }
