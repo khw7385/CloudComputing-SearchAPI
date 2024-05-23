@@ -6,46 +6,34 @@ import java.util.*;
 
 public class Trie {
     private final Node root = new Node();
-    private static final Integer HANGUL_BASE_CODE = 44032;
-    private static final Integer FIRST_SOUND_SIZE = 19;
-    private static final Integer MID_SOUND_SIZE = 21;
-    private static final Integer LAST_SOUND_SIZE = 28;
-    private static final Integer LAST_SOUND_NULL_INDEX = 40;
 
     private void insert(String tag){
         Node node = this.root;
 
         for (int i = 0; i < tag.length(); i++){
-            char ch = tag.charAt(i);
+            char character = tag.charAt(i);
 
-            Integer firstSound = this.getFirstSoundIdx(ch);
-            Integer midSound = this.getMidSoundIdx(ch);
-            Integer lastSound = this.getLastSoundIdx(ch);
+            Phoneme phonemes = Phoneme.from(character);
 
-            node = createNodeFromLetter(node, firstSound, midSound, lastSound);
+            node = createNodeFromLetter(node, phonemes);
         }
         node.setData(tag);
         node.setLast(true);
     }
 
-    private Integer getFirstSoundIdx(char ch) {
-        return ((ch - HANGUL_BASE_CODE) / LAST_SOUND_SIZE) / MID_SOUND_SIZE; // 0 ~ 18
-    }
+    private Node createNodeFromLetter(Node node, Phoneme phonemes) {
 
-    private Integer getMidSoundIdx(char ch) {
-        return ((ch - HANGUL_BASE_CODE) / LAST_SOUND_SIZE) % MID_SOUND_SIZE + FIRST_SOUND_SIZE; // 19 ~ 39
-    }
+        Integer firstSoundIdx = phonemes.getFirstSoundIdx();
+        Integer midSoundIdx = phonemes.getMidSoundIdx();
+        Integer lastSoundIdx = phonemes.getLastSoundIdx();
 
-    private Integer getLastSoundIdx(char ch) {
-        return (ch - HANGUL_BASE_CODE) % LAST_SOUND_SIZE + FIRST_SOUND_SIZE + MID_SOUND_SIZE; // 40 ~ 67
-    }
+        node = node.addChildNode(firstSoundIdx);
 
-    private Node createNodeFromLetter(Node node, Integer firstSound, Integer midSound, Integer lastSound) {
-        node = node.addChildNode(firstSound);
-        node = node.addChildNode(midSound);
+        node = node.addChildNode(midSoundIdx);
 
-        if(lastSound != null){
-            node = node.addChildNode(lastSound);
+
+        if(lastSoundIdx != null){
+            node = node.addChildNode(lastSoundIdx);
         }
         return node;
     }
@@ -54,16 +42,20 @@ public class Trie {
         return ch <= 'ㅎ';
     }
 
-    private Node searchNodeFromLetter(Node node, Integer firstSound, Integer midSound, Integer lastSound) {
-        if(node.findNode(firstSound)){
-            node = node.getNextNode(firstSound);
+    private Node searchNodeFromLetter(Node node, Phoneme phoneme) {
+        Integer firstSoundIdx = phoneme.getFirstSoundIdx();
+        Integer midSoundIdx = phoneme.getMidSoundIdx();
+        Integer lastSoundIdx = phoneme.getLastSoundIdx();
 
-            if(node.findNode(midSound)){
-                node = node.getNextNode(midSound);
+        if(node.findNode(firstSoundIdx)){
+            node = node.getNextNode(firstSoundIdx);
 
-                if(!lastSound.equals(LAST_SOUND_NULL_INDEX)){
-                    if(node.findNode(lastSound)){
-                        node = node.getNextNode(lastSound);
+            if(node.findNode(midSoundIdx)){
+                node = node.getNextNode(midSoundIdx);
+
+                if(!lastSoundIdx.equals(Phoneme.LAST_SOUND_NULL_INDEX)){
+                    if(node.findNode(lastSoundIdx)){
+                        node = node.getNextNode(lastSoundIdx);
                         return node;
                     }
                     return null;
@@ -77,23 +69,21 @@ public class Trie {
 
     private Node navigateToNode(Node node ,String searchText) {
         for (int i = 0; i < searchText.length(); i++) {
-            char ch = searchText.charAt(i);
+            char character = searchText.charAt(i);
 
-            if(checkOnlyFirstSound(ch)){
-                Integer idx = Phoneme.getFirstSoundIdx(ch);
+            if(checkOnlyFirstSound(character)){
+                Integer idx = Phoneme.getFirstSoundIdxForOnlyFirstSound(character);
                 node = node.getNextNode(idx);
             }else{
-                Integer firstSound = this.getFirstSoundIdx(ch);
-                Integer midSound = this.getMidSoundIdx(ch);
-                Integer lastSound = this.getLastSoundIdx(ch);
-                node = searchNodeFromLetter(node, firstSound, midSound, lastSound);
+                Phoneme phoneme = Phoneme.from(character);
+                node = searchNodeFromLetter(node, phoneme);
             }
             if(node == null) return null;
         }
         return node;
     }
 
-    private void bfs(Node node, List<String> tagList) {
+    private void searchTagsUsingBFS(Node node, List<String> tagList) {
         Queue<Node> queue = new LinkedList<>();
         queue.add(node);
 
@@ -126,7 +116,7 @@ public class Trie {
 
         if(node == null) return tagList;
 
-        bfs(node, tagList);
+        searchTagsUsingBFS(node, tagList);
 
         return tagList;
     }
