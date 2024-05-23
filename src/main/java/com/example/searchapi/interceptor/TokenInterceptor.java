@@ -3,6 +3,7 @@ package com.example.searchapi.interceptor;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClient;
@@ -12,8 +13,7 @@ import java.math.BigDecimal;
 
 @RequiredArgsConstructor
 public class TokenInterceptor implements HandlerInterceptor {
-
-    private static final String AUTHORIZATION = "Authorization";
+    
     private static final String NOT_TOKEN_RESPONSE = "{ \"error\": \"토큰을 찾을 수 없습니다.\"}";
 
     private final String AuthServerURL;
@@ -24,7 +24,7 @@ public class TokenInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        String token = request.getHeader(AUTHORIZATION);
+        String token = request.getHeader(HttpHeaders.AUTHORIZATION);
 
         //Authorization header가 없다면 401 status code 반환
         if (token == null) {
@@ -39,7 +39,7 @@ public class TokenInterceptor implements HandlerInterceptor {
             //Auth 서버로부터 유저 ID를 가져옴
             ResponseEntity<UserDetail> authResponse = RestClient.builder()
                     .baseUrl(AuthServerURL)
-                    .defaultHeader(AUTHORIZATION, token)
+                    .defaultHeader(HttpHeaders.AUTHORIZATION, token)
                     .build()
                     .get()
                     .uri(AuthApiURL)
