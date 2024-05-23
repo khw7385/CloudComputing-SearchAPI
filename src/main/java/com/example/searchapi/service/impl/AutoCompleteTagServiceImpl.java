@@ -1,8 +1,6 @@
 package com.example.searchapi.service.impl;
 
 import com.example.searchapi.dto.AutoCompleteTagDTO;
-import com.example.searchapi.entity.Image;
-import com.example.searchapi.entity.Tag;
 import com.example.searchapi.exception.NotKoreanTagFoundException;
 import com.example.searchapi.repository.ImageRepository;
 import com.example.searchapi.repository.ImageTagAssociationRepository;
