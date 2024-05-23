@@ -99,17 +99,18 @@ public class Trie {
             }
         }
     }
-
+    private void checkNotKoreanTag(String searchText) {
+        if(searchText.matches("[가-힣ㄱ-ㅎ]+")){
+            throw new NotKoreanTagFoundException();
+        }
+    }
     public void insertAll(List<String> tagList){
-        tagList.forEach(tag-> {
-            if (!tag.matches("[가-힣ㄱ-ㅎ]+")){
-                throw new NotKoreanTagFoundException();
-            }
-        });
+        tagList.forEach(this::checkNotKoreanTag);
         tagList.forEach(this::insert);
     }
 
     public List<String> searchTags(String searchText){
+        checkNotKoreanTag(searchText);
         List<String> tagList = new ArrayList<>();
         Node node = root;
         node = navigateToNode(node ,searchText);
@@ -120,4 +121,5 @@ public class Trie {
 
         return tagList;
     }
+
 }
