@@ -39,6 +39,11 @@ public class TrieTest {
         List<String> list6 = trie.searchTags("ㅍ");
         list6.forEach(System.out::println);
 
+        System.out.println("===================");
+
+        List<String> list7 = trie.searchTags("하ㄴ");
+        list7.forEach(System.out::println);
+
     }
 
     @Test

@@ -31,14 +31,12 @@ public class Trie {
 
         node = node.addChildNode(midSoundIdx);
 
+        node = node.addChildNode(lastSoundIdx);
 
-        if(lastSoundIdx != null){
-            node = node.addChildNode(lastSoundIdx);
-        }
         return node;
     }
 
-    private Node searchNodeFromLetter(Node node, Phoneme phoneme) {
+    private Node searchNodeFromLetter(Node node, Phoneme phoneme, boolean isLastCharacter) {
         Integer firstSoundIdx = phoneme.getFirstSoundIdx();
         Integer midSoundIdx = phoneme.getMidSoundIdx();
         Integer lastSoundIdx = phoneme.getLastSoundIdx();
@@ -49,12 +47,11 @@ public class Trie {
             if(node.findNode(midSoundIdx)){
                 node = node.getNextNode(midSoundIdx);
 
-                if(!lastSoundIdx.equals(Phoneme.LAST_SOUND_NULL_INDEX)){
+                if (!isLastCharacter){
                     if(node.findNode(lastSoundIdx)){
                         node = node.getNextNode(lastSoundIdx);
                         return node;
                     }
-                    return null;
                 }
                 return node;
             }
@@ -64,7 +61,9 @@ public class Trie {
     }
 
     private Node navigateToNode(Node node ,String searchText) {
-        for (int i = 0; i < searchText.length(); i++) {
+        int length = searchText.length();
+
+        for (int i = 0; i < length; i++) {
             char character = searchText.charAt(i);
 
             if(Phoneme.checkOnlyFirstSound(character)){
@@ -72,7 +71,7 @@ public class Trie {
                 node = node.getNextNode(idx);
             }else{
                 Phoneme phoneme = Phoneme.from(character);
-                node = searchNodeFromLetter(node, phoneme);
+                node = searchNodeFromLetter(node, phoneme, (i == length - 1));
             }
             if(node == null) return null;
         }
