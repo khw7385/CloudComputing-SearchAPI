@@ -5,6 +5,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @NoArgsConstructor
@@ -12,13 +13,24 @@ import java.util.Map;
 public class Node {
     private String data;
     private boolean isLast;
-    private final Map<Integer, Node> childNodes = new HashMap<>();
-    public Node findChildNode(int key){
-        if(!childNodes.containsKey(key)){
+    private final Map<Integer, Node> childNodeMap = new HashMap<>();
+
+    public boolean findNode(int key){
+        return childNodeMap.containsKey(key);
+    }
+    public Node getNextNode(int key){
+        return childNodeMap.get(key);
+    }
+    public Node addChildNode(int key){
+        if(!findNode(key)){
             Node newNode = new Node();
-            childNodes.put(key, newNode);
+            childNodeMap.put(key, newNode);
             return newNode;
         }
-        return childNodes.get(key);
+        return childNodeMap.get(key);
+    }
+
+    public List<Node> getChildNodes(){
+        return childNodeMap.values().stream().toList();
     }
 }
