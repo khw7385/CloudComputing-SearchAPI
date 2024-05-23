@@ -12,7 +12,7 @@ public class ImageHasTags {
 
     public record PK(Long TagID, Long ImageID) implements Serializable {
 
-    };
+    }
 
     @EmbeddedId
     private PK pk;
