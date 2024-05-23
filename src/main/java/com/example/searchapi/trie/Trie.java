@@ -96,7 +96,7 @@ public class Trie {
         }
     }
     private void checkNotKoreanTag(String searchText) {
-        if(searchText.matches("[가-힣ㄱ-ㅎ]+")){
+        if(!searchText.matches("[가-힣ㄱ-ㅎ]+")){
             throw new NotKoreanTagFoundException();
         }
     }
