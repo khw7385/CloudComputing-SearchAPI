@@ -27,6 +27,10 @@ public class Phoneme {
         return Arrays.binarySearch(firstSoundList.toArray(), ch);
     }
 
+    public static boolean checkOnlyFirstSound(char ch) {
+        return ch <= 'ㅎ';
+    }
+
     public static Integer getFirstSoundIdx(char ch) {
         return ((ch - HANGUL_BASE_CODE) / LAST_SOUND_SIZE) / MID_SOUND_SIZE; // 0 ~ 18
     }

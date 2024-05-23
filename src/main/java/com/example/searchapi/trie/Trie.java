@@ -38,10 +38,6 @@ public class Trie {
         return node;
     }
 
-    private boolean checkOnlyFirstSound(char ch) {
-        return ch <= 'ㅎ';
-    }
-
     private Node searchNodeFromLetter(Node node, Phoneme phoneme) {
         Integer firstSoundIdx = phoneme.getFirstSoundIdx();
         Integer midSoundIdx = phoneme.getMidSoundIdx();
@@ -71,7 +67,7 @@ public class Trie {
         for (int i = 0; i < searchText.length(); i++) {
             char character = searchText.charAt(i);
 
-            if(checkOnlyFirstSound(character)){
+            if(Phoneme.checkOnlyFirstSound(character)){
                 Integer idx = Phoneme.getFirstSoundIdxForOnlyFirstSound(character);
                 node = node.getNextNode(idx);
             }else{
