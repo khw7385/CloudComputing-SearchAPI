@@ -1,3 +1,82 @@
 spring:
   application:
     name: SearchAPI
+  profiles:
+    group:
+      dev: mysql-dev
+      prod: mysql-prod
+      test: h2
+  jpa:
+    hibernate:
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+
+auth:
+  server-url: ${AUTH_SERVER_URL}
+  api-url: ${AUTH_API_URL}
+
+---
+spring:
+  config:
+    activate:
+      on-profile: h2
+  datasource:
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:mem:db
+    username: ${DATABASE_ID}
+    password: ${DATABASE_PW}
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        show_sql: true
+    database-platform: org.hibernate.dialect.H2Dialect
+    database: h2
+
+
+---
+spring:
+  config:
+    activate:
+      on-profile: mysql-dev
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://${MYSQL_HOST}:${MYSQL_PORT}/${MYSQL_DATABASE}?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
+    username: ${DATABASE_ID}
+    password: ${DATABASE_PW}
+    hikari:
+      data-source-properties:
+        rewriteBatchedStatements: true
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        show_sql: false
+    database-platform: org.hibernate.dialect.MySQL8Dialect
+    database: mysql
+
+---
+spring:
+  config:
+    activate:
+      on-profile: mysql-prod
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://${MYSQL_HOST}:${MYSQL_PORT}/${MYSQL_DATABASE}?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
+    username: ${DATABASE_ID}
+    password: ${DATABASE_PW}
+    hikari:
+      data-source-properties:
+        rewriteBatchedStatements: true
+
+  jpa:
+    hibernate:
+      ddl-auto: none
+    properties:
+      hibernate:
+        show_sql: false
+    database-platform: org.hibernate.dialect.MySQL8Dialect
+    database: mysql
